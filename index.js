@@ -1,15 +1,14 @@
-const http = require('http')
 const express = require('express')
 const chalk = require('chalk')
-const fs = require('fs/promises')
-const path = require('path')
-const { addNote } = require('./notes.controller')
+const { addNote, getNotes } = require('./notes.controller')
 
 const port = 3000
 
-const basePath = path.join(__dirname, 'pages')
-
 const app = express()
+// переопределяем базовые настройки express
+app.set('view engine', 'ejs')
+// переопределяем путь, где express ищет шаблоны html
+app.set('views', 'pages')
 
 // добавляем дополнительный функционал, плагины
 app.use(
@@ -18,14 +17,21 @@ app.use(
   })
 )
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(basePath, 'index.html'))
+app.get('/', async (req, res) => {
+  // в объекте передаем дополнительные параметры
+  res.render('index', {
+    title: 'Express App',
+    notes: await getNotes()
+  })
 })
 
 app.post('/', async (req, res) => {
   // req.body уже содержит нормальный объект типа {title: '12345'}
   await addNote(req.body.title)
-  res.sendFile(path.join(basePath, 'index.html'))
+  res.render('index', {
+    title: 'Express App',
+    notes: await getNotes()
+  })
 })
 
 app.listen(port, () => {
