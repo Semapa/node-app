@@ -20,6 +20,7 @@ app.use(
     extended: true
   })
 )
+app.use(express.json())
 
 app.get('/', async (req, res) => {
   // в объекте передаем дополнительные параметры
@@ -42,6 +43,17 @@ app.post('/', async (req, res) => {
 
 app.delete('/:id', async (req, res) => {
   removeNote(req.params.id)
+  res.render('index', {
+    title: 'Express App',
+    notes: await getNotes(),
+    created: false
+  })
+})
+
+app.put('/:id', async (req, res) => {
+  console.log('put  req.params.id', req.params.id)
+  console.log('body ', req.body)
+  // await updateNote(req.params.id, req.body)
   res.render('index', {
     title: 'Express App',
     notes: await getNotes(),

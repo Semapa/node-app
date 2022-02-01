@@ -8,10 +8,25 @@ document.addEventListener('click', (event) => {
       event.target.closest('li').remove()
     })
   }
+
+  if (event.target.dataset.type === 'edit') {
+    const newNoteTitle = prompt('Введите новое название')
+    const id = event.target.dataset.id
+    update(id, { data: newNoteTitle })
+    console.log('newNoteTitle', id, newNoteTitle)
+  }
 })
 
 async function remove(id) {
   await fetch(`/${id}`, {
     method: 'DELETE'
+  })
+}
+
+async function update(id, data) {
+  console.log('editNote data', data)
+  await fetch(`/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
   })
 }
