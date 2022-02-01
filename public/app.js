@@ -11,9 +11,11 @@ document.addEventListener('click', (event) => {
 
   if (event.target.dataset.type === 'edit') {
     const newNoteTitle = prompt('Введите новое название')
-    const id = event.target.dataset.id
-    update(id, { data: newNoteTitle })
-    console.log('newNoteTitle', id, newNoteTitle)
+    if (newNoteTitle) {
+      const id = event.target.dataset.id
+      update(id, { data: newNoteTitle })
+      console.log('newNoteTitle', id, newNoteTitle)
+    }
   }
 })
 
@@ -27,6 +29,9 @@ async function update(id, data) {
   console.log('editNote data', data)
   await fetch(`/${id}`, {
     method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
     body: JSON.stringify(data)
   })
 }
